@@ -17,7 +17,6 @@ using namespace std;
 Mat imgCVT(Mat img, Mat img_hsv, Mat mask);
 
 int main() {
-
 	//i) masking - show
 	Mat health = imread("grape_health.png"); 
 	Mat health_hsv, health_mask;
