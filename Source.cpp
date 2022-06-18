@@ -15,7 +15,7 @@ using namespace std;
 // 2. Set as DEFAULT
 // 3. Find proportion of GREEN in Current IMG -> proportion 'current'
 // 4. Compare 
-// *Upload to git
+//upload
 
 Mat imgCVT(Mat img, Mat img_hsv, Mat mask);
 
