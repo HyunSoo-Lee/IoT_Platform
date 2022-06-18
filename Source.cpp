@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <vector>
 #include <algorithm>
+#include <fstream>
+#include <string>
 
 using namespace cv;
 using namespace std;
@@ -13,16 +15,14 @@ using namespace std;
 // 2. Set as DEFAULT
 // 3. Find proportion of GREEN in Current IMG -> proportion 'current'
 // 4. Compare 
+// *Upload to git
 
 Mat imgCVT(Mat img, Mat img_hsv, Mat mask);
 
 int main() {
 	//i) masking - show
-	Mat health = imread("grape_health.png"); 
-	Mat health_hsv, health_mask;
-	health_mask = imgCVT(health, health_hsv, health_mask);
 
-	Mat unhealth = imread("grape_unhealth.png");
+	Mat unhealth = imread("unhealth.png");
 	Mat unhealth_hsv, unhealth_mask;
 	unhealth_mask = imgCVT(unhealth, unhealth_hsv, unhealth_mask);
 
@@ -37,15 +37,21 @@ int main() {
 	for (int i = 0; i < contours.size(); i++) {
 		float peri = arcLength(contours[i], true);
 		approxPolyDP(contours[i], conPoly[i], 0.001 * peri, true);
+		cout << " Area: " << contourArea(contours[i]) << endl;
 		drawContours(unhealth, conPoly, i, Scalar(0, 0, 255), 3);
-	}
+		imshow("result", unhealth);
+	}	
 
-	cout << "conPoly size : " << conPoly.size() << endl;
+	std::ofstream ofs("test.txt");
+	if (ofs.fail())
+	{
+		std::cerr << "Error!" << std::endl;
+		return -1;
+	}
+	ofs << contours.size() << endl;
 
 	//imshow("health", health);
-	//imshow("mask", health_mask);
-	imshow("unhealth", unhealth);
-	imshow("un_mask", unhealth_mask);
+	imshow("mask", unhealth_mask);
 	imshow("result", unhealth);
 	waitKey(0);
 
@@ -58,9 +64,10 @@ Mat imgCVT(Mat img, Mat img_hsv, Mat mask) {
 	//H : 85(60)~135(95)
 	//S : 60   153~255
 	//V : 70   178~255
-	Scalar lower_green = Scalar(60, 153, 178);
-	Scalar upper_green = Scalar(95, 255, 255);
+	Scalar lower_green = Scalar(25, 0, 0);
+	Scalar upper_green = Scalar(70, 255, 255);
 	inRange(img_hsv, lower_green, upper_green, mask);
 	GaussianBlur(mask, mask, Size(7, 7), 0);
 	return mask;
+
 }
